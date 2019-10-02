@@ -198,7 +198,8 @@ void loop() {
       case 'm':
         for (i=0; i<6; i++) {
             pwm.setPWM(i+1, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
-                      
+            Serial.print(val[i]);
+            delay(300);                     
          }  
           
         break;
