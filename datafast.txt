@@ -173,49 +173,57 @@ AccelX: 1.180402  AccelY: -0.199327  AccelZ: -9.907711
 AccelX: 1.421630  AccelY: -0.411824  AccelZ: -9.811341
 AccelX: -0.625517  AccelY: 2.385944  AccelZ: -9.816129
 AccelX: 1.835848  AccelY: 1.755638  AccelZ: -9.635357
-AccelX: 1.871763  AccelY: 1.644302  AccelZ: -9.596450
+AccelX: 1.871763  AccelY: 1.644302  AccelZ: -9.596450
+
 
 AccelX: 1.149275  AccelY: -0.199327  AccelZ: -9.799368
 AccelX: 1.532966  AccelY: -0.477069  AccelZ: -9.849650
 AccelX: -0.693157  AccelY: 3.154521  AccelZ: -10.147743
 AccelX: 1.825073  AccelY: 1.736483  AccelZ: -9.608422
-AccelX: 1.920846  AccelY: 1.623351  AccelZ: -9.613809
+AccelX: 1.920846  AccelY: 1.623351  AccelZ: -9.613809
+
 
 AccelX: 1.186387  AccelY: -0.151441  AccelZ: -9.874192
 AccelX: 1.452756  AccelY: -0.344783  AccelZ: -9.815530
 AccelX: -0.718297  AccelY: 3.135966  AccelZ: -9.767045
 AccelX: 1.827468  AccelY: 1.804123  AccelZ: -9.609020
-AccelX: 1.885530  AccelY: 1.653280  AccelZ: -9.603632
+AccelX: 1.885530  AccelY: 1.653280  AccelZ: -9.603632
+
 
 AccelX: 1.150472  AccelY: -0.234045  AccelZ: -9.891551
 AccelX: 1.435397  AccelY: -0.474675  AccelZ: -9.841868
 AccelX: 0.130491  AccelY: 2.834281  AccelZ: -9.782608
 AccelX: 1.812503  AccelY: 1.710146  AccelZ: -9.621590
-AccelX: 1.898100  AccelY: 1.614971  AccelZ: -9.632365
+AccelX: 1.898100  AccelY: 1.614971  AccelZ: -9.632365
+
 
 AccelX: 1.149874  AccelY: -0.221475  AccelZ: -9.897536
 AccelX: 1.470713  AccelY: -0.467492  AccelZ: -9.861621
 AccelX: -0.512385  AccelY: 3.062340  AccelZ: -9.962781
 AccelX: 1.805919  AccelY: 1.740075  AccelZ: -9.637153
-AccelX: 1.899297  AccelY: 1.629337  AccelZ: -9.621590
+AccelX: 1.899297  AccelY: 1.629337  AccelZ: -9.621590
+
 
 AccelX: 1.153465  AccelY: -0.224468  AccelZ: -9.925071
 AccelX: 1.465925  AccelY: -0.488442  AccelZ: -9.840671
 AccelX: -0.708121  AccelY: 2.864808  AccelZ: -9.935247
 AccelX: 1.827468  AccelY: 1.759229  AccelZ: -9.655111
-AccelX: 1.901093  AccelY: 1.616767  AccelZ: -9.645533
+AccelX: 1.901093  AccelY: 1.616767  AccelZ: -9.645533
+
 
 AccelX: 1.153465  AccelY: -0.158624  AccelZ: -9.788595
 AccelX: 1.472509  AccelY: -0.506399  AccelZ: -9.804756
 AccelX: -0.291509  AccelY: 3.219767  AccelZ: -9.527613
 AccelX: 1.810707  AccelY: 1.750849  AccelZ: -9.650322
-AccelX: 1.907079  AccelY: 1.624549  AccelZ: -9.665287
+AccelX: 1.907079  AccelY: 1.624549  AccelZ: -9.665287
+
 
 AccelX: 1.164240  AccelY: -0.178976  AccelZ: -9.898734
 AccelX: 1.534762  AccelY: -0.475872  AccelZ: -9.820319
 AccelX: -0.948751  AccelY: 2.627172  AccelZ: -10.614636
 AccelX: 1.832256  AccelY: 1.715533  AccelZ: -9.637752
-AccelX: 1.925036  AccelY: 1.612577  AccelZ: -9.638351
+AccelX: 1.925036  AccelY: 1.612577  AccelZ: -9.638351
+
 
 AccelX: 1.171423  AccelY: -0.204116  AccelZ: -9.889755
 AccelX: 1.419235  AccelY: -0.417211  AccelZ: -9.833488
@@ -228,7 +236,8 @@ AccelX: 1.161846  AccelY: -0.190349  AccelZ: -9.838276
 AccelX: 1.419834  AccelY: -0.375909  AccelZ: -9.785601
 AccelX: -0.156828  AccelY: 3.132374  AccelZ: -10.567348
 AccelX: 1.783771  AccelY: 1.735286  AccelZ: -9.613210
-AccelX: 1.889720  AccelY: 1.624549  AccelZ: -9.617401
+AccelX: 1.889720  AccelY: 1.624549  AccelZ: -9.617401
+
 
 I received: 1
 AccelX: 1.180402  AccelY: -0.199327  AccelZ: -9.907711
@@ -243,7 +252,9 @@ AccelX: 1.484481  AccelY: -0.447140  AccelZ: -9.823910
 AccelX: 1.028961  AccelY: 1.412651  AccelZ: -10.127989
 AccelX: 1.811904  AccelY: 1.661062  AccelZ: -9.628773
 AccelX: 1.895706  AccelY: 1.641309  AccelZ: -9.623985
- Servo values = [270 300 197 235 175 170 ]
+ Servo values = [270 300 197 235 175 170 ]
 
 
+
+AccelX: 0.960124  AccelY: 1.055298  AccelZ: -9.780214
 
