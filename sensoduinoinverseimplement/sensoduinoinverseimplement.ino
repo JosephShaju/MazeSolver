@@ -6,15 +6,18 @@
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 int a = 0;
 int i = 0;
-int pulselength = 0;
-const int SERVOMIN_1 = 150; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_1 = 450; // 'maximum' pulse length count (out of 4096) 475
+int steps = 0;
+
+const int SERVOMIN[6] = {129,158,143,123,154,142}; // 'minimum' pulse length 
+const int SERVOMAX[6] = {507,596,565,469,615,544}; // 'maximum' pulse length 
+
 
 float Pox[6] = {73.7237,81.5677,7.84402,-7.84402,-81.5677,-73.7237};
 float Poy[6] = {51.6219,38.0356,-89.6575,-89.6575,38.0356,51.6219};
 float Box[6] = {28.501856,113.99164,85.489787,-85.489787,-113.9916,-28.50186};
 float Boy[6] = {115.17,-32.90,-82.27,-82.27,-32.90,115.17};
 int theta[6] = {180,-120,60,120,-60,0};
+int angle[6] = {200,180,190,195,200,220};
 
 
 float Px = 0.00;
@@ -41,6 +44,8 @@ float Lz[6] = {};
 float L[6] = {};
 float alphar[6] = {};
 float alphad[6] = {};
+float pulselength[6] = {};
+float motorang[6] = {};
 
 #define START_CMD_CHAR '>'
 #define END_CMD_CHAR '\n'
@@ -173,5 +178,18 @@ void alphadeg()
 {
   for (i = 0, i<6 ; i++){
     alphad[i] = ((alphar[i]) * PI * (1/180)); 
+  }
+}
+void degreesteps()
+{
+  for (i = 0, i<6 ; i++){
+      steps = SERVOMAX[i] - SERVOMIN[i];
+      pulselength[i] = ((steps)/(angle[i]));
+  }
+}
+void finalval()
+{
+  for (i = 0, i<6 ; i++){
+    motorang[i] = (alphad[i])*(pulselength[i]);
   }
 }
