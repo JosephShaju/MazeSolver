@@ -20,8 +20,6 @@ int theta[6] = {180,-120,60,120,-60,0};
 int angle[6] = {200,180,190,195,200,220};
 
 
-float Px = 0.00;
-float Py = 0.00;
 float tr = 0.00;
 float ty = 0.00;
 float tp = 0.00;
@@ -29,23 +27,23 @@ float sw = 0.00;
 float su = 0.00;
 float hv = 0.00;
 float ht = 90;
-float A = 0.00;
-float B = 0.00;
-float C = 0.00;
 int rod = 120;
 int servo = 20;
 
-float Px[6] = {};
-float Py[6] = {};
-float Pz[6] = {};
-float Lx[6] = {};
-float Ly[6] = {};
-float Lz[6] = {};
-float L[6] = {};
-float alphar[6] = {};
-float alphad[6] = {};
-float pulselength[6] = {};
-float motorang[6] = {};
+float Px[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float Py[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float Pz[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float Lx[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float Ly[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float Lz[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float L[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float A[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float B[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float C[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float alphar[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float alphad[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float pulselength[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+float motorang[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
 
 #define START_CMD_CHAR '>'
 #define END_CMD_CHAR '\n'
@@ -55,6 +53,10 @@ float motorang[6] = {};
 // Center servos
 int tiltVal = 90; 
 int panVal =90; 
+int accel = 0;
+float valaccel[3] = {0.0,0.0,0.0};
+float valgyro[3] = {0.0,0.0,0.0};
+float valorien[3] = {0.0,0.0,0.0};
 String inText;
 float value0, value1, value2;
 
@@ -94,6 +96,21 @@ void loop()
 
   // parse incoming pin# and value 
   sensorType = Serial1.parseInt(); // read sensor typr
+  if (sensorType == 1){ // accelerator
+    valaccel[0] = value0;
+    valaccel[1] = value1;
+    valaccel[2] = value2;
+  }
+  if (sensorType == 4){ // gyroscope
+    valgyro[0] = value0;
+    valgyro[1] = value1;
+    valgyro[2] = value2;
+  }
+  if (sensorType == 3){ // orientation
+    valorien[0] = value0;
+    valorien[1] = value1;
+    valorien[2] = value2;
+  }
   logCount = Serial1.parseInt();  // read total logged sensor readings
   value0 = Serial1.parseFloat();  // 1st sensor value
   value1 = Serial1.parseFloat();  // 2rd sensor value if exists
@@ -112,21 +129,23 @@ void loop()
     Serial.print("Val[2]: ");
     Serial.println(value2);
     Serial.println("-----------------------");
-    delay(10);
+    delay(30);
   }
 
 // Check sensor type. If not for  Accelerometer (#1) then ignore readings
 // sensorType 1 is the Accelerometer sensor
 
-  if (sensorType !=1) return;   
-
-  panVal = value0; // value0 = X sensor reading
-  tiltVal = value1;  // value1 = Y sensor reading
-
-  tiltVal = map(tiltVal, 10, -10, 0, 179);   // Map Accelerometer Y value to tilt servo angle. 
-  for (i = 0;i<1;i++){
-    pulselength = map(tiltVal,0,179,SERVOMIN_1,SERVOMAX_1);
-    pwm.setPWM(i+1, 0, pulselength);
+  platpivot(valorien[0],valorien[1],valorien[2]);
+  deltaL();
+  virtleglen();
+  ABC();
+  alpharad();
+  alphadeg();
+  degreesteps();
+  finalval();
+  for (i = 0; i<6; i++){
+    Serial.println(motorang[i]);
+  
   }
 }
 /*
@@ -136,17 +155,17 @@ void loop()
 }
 
 */
-void platpivot()
+float platpivot(float ty,float tp,float tr)
 {
-  for (i = 0, i<6 ; i++){ 
-    Px[i] = ((Pox[i])*cos(tr)*cos(ty)) + ((Poy[i])*[(sin(tp)*sin(tr)*cos(tr)) - (cos(tp)*sin(ty))]) + sw ;
-    Py[i] = ((Pox[i])*cos(tr)*sin(ty)) + ((Poy[i])*[(cos(tp)*cos(ty)) + (sin(tp)*sin(tr)*sin(ty))]) + su ;
+  for (i = 0; i<6 ; i++){ 
+    Px[i] = ((Pox[i])*cos(tr)*cos(ty)) + ((Poy[i])*((sin(tp)*sin(tr)*cos(tr)) - (cos(tp)*sin(ty)))) + sw ;
+    Py[i] = ((Pox[i])*cos(tr)*sin(ty)) + ((Poy[i])*((cos(tp)*cos(ty)) + (sin(tp)*sin(tr)*sin(ty)))) + su ;
     Pz[i] = (-(Pox[i])*sin(tr)) + ((Poy[i])*sin(tp)*cos(tr)) + ht + hv ;
   }   
 }
 void deltaL()
 {
-  for (i = 0, i<6 ; i++){ 
+  for (i = 0; i<6 ; i++){ 
     Lx[i] = Box[i] - Px[i] ;
     Ly[i] = Boy[i] - Py[i];
     Lz[i] = -Pz[i];
@@ -155,41 +174,41 @@ void deltaL()
 
 void virtleglen()
 {
-  for (i = 0, i<6 ; i++){ 
-    L[i] = sqrt(((Lx[i])^2) + ((Ly[i])^2) + ((Lz[i])^2));
+  for (i = 0; i<6 ; i++){ 
+    L[i] = sqrt((pow((Lx[i]),2.0)) + (pow((Ly[i]),2.0)) + (pow((Lz[i]),2.0)));
    }
 }
 
 void ABC()
 {
-  for (i = 0, i<6 ; i++){ 
-    A[i] = ((L[i])^2) - (((rod)^2) - ((servo)^2));
+  for (i = 0; i<6 ; i++){ 
+    A[i] = (pow((L[i]),2.0)) - ((pow((rod),2.0)) - (pow((servo),2.0)));
     B[i] =  2*(servo)*(Pz[i]);
     C[i] = (2*(servo)*cos((theta[i])*PI*(1/180))*(Px[i] - Box[i])) + (sin((theta[i])*PI*(1/180))*(Py[i] - Boy[i]));
   }
 }
 void alpharad()
 {
-  for (i = 0, i<6 ; i++){
-    alphar[i] = (asin((A[i])/(sqrt(((B[i])^2) + ((C[i])^2))))) - (atan((C[i])/(B[i]))); 
+  for (i = 0; i<6 ; i++){
+    alphar[i] = (asin((A[i])/(sqrt((pow((B[i]),2)) + (pow((B[i]),2)))))) - (atan((C[i])/(B[i]))); 
   }
 }
 void alphadeg()
 {
-  for (i = 0, i<6 ; i++){
+  for (i = 0; i<6 ; i++){
     alphad[i] = ((alphar[i]) * PI * (1/180)); 
   }
 }
 void degreesteps()
 {
-  for (i = 0, i<6 ; i++){
+  for (i = 0; i<6 ; i++){
       steps = SERVOMAX[i] - SERVOMIN[i];
       pulselength[i] = ((steps)/(angle[i]));
   }
 }
 void finalval()
 {
-  for (i = 0, i<6 ; i++){
+  for (i = 0; i<6;i++){
     motorang[i] = (alphad[i])*(pulselength[i]);
   }
 }
