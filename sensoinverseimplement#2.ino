@@ -3,26 +3,14 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
-
-
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 int a = 0;
 int i = 0;
 int steps = 0;
 
+const int SERVOMIN[6] = {129,158,143,123,154,142}; // 'minimum' pulse length 
+const int SERVOMAX[6] = {507,596,565,469,615,544}; // 'maximum' pulse length 
 
-const int SERVOMIN_1 = 154; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_1 = 615; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_2 = 142; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_2 = 544; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_3 = 143; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_3 = 565; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_4 = 129; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_4 = 507; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_5 = 123; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_5 = 469; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_6 = 158; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_6 = 596; // 'maximum' pulse length count (out of 4096) 475
 
 double Pox[6] = {73.7237,81.5677,7.84402,-7.84402,-81.5677,-73.7237};
 double Poy[6] = {51.6219,38.0356,-89.6575,-89.6575,38.0356,51.6219};
@@ -30,7 +18,7 @@ double Box[6] = {28.501856,113.99164,85.489787,-85.489787,-113.9916,-28.50186};
 double Boy[6] = {115.17,-32.90,-82.27,-82.27,-32.90,115.17};
 int theta[6] = {180,-120,60,120,-60,0};
 int angle[6] = {200,180,190,195,200,220};
-double pulselength[6] = {1.89,2.43,2.22,1.77,2.305,1.827};
+double pulselength[6] = {1.89,2.433333333333333,2.221052631578947,1.7743589743589743,2.305,1.8272727272727274};
 
 
 double tr = 0.00;
@@ -55,8 +43,8 @@ double B[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
 double C[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
 double alphar[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
 double alphad[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
-double alphadprev[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
-double motorang[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+
+int motorang[6] = {270,310,280,360,235,293};
 
 #define START_CMD_CHAR '>'
 #define END_CMD_CHAR '\n'
@@ -64,18 +52,17 @@ double motorang[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
 
 #define DEBUG 1 // Set to 0 if you don't want serial output of sensor data
 // Center servos
-int tiltVal = 90; 
-int panVal =90; 
 int accel = 0;
 float valaccel[3] = {0.0,0.0,0.0};
 float valgyro[3] = {0.0,0.0,0.0};
 float valorien[3] = {0.0,0.0,0.0};
 String inText;
 float value0, value1, value2;
-int val[6] = {170,410,180,440,150,390};
+int val[6] = {270,310,280,360,235,293};
 int min_val[6] = {170,410,180,440,150,390};
 int max_val[6] = {370,210,380,280,320,195};
 void setup() {
+  pwm.begin();
   Serial.begin(9600);
   Serial1.begin(9600);
   pinMode(19, INPUT_PULLUP);
@@ -85,12 +72,16 @@ void setup() {
   Serial.println("3- ORIENTATION (Yaw, Pitch, Roll)");
   Serial.println("4- GYROSCOPE (rad/sec - X,Y,Z)");
   pwm.setPWMFreq(60);
+  /*for (i=0; i<6; i++) {  
+          pwm.setPWM(i+1, 0, 0); // added +1 to match PWM port numbering (pins 1..6 used)
+  }*/
   for (i=0; i<6; i++) {  
-          pwm.setPWM(i, 0, val[i]); // added +1 to match PWM port numbering (pins 1..6 used)
-    
+          pwm.setPWM(i+1, 0, motorang[i]); // added +1 to match PWM port numbering (pins 1..6 used)
+  }  
   Serial.println(a);
   
-}
+  
+
 }
 void loop()
 {
@@ -98,7 +89,6 @@ void loop()
   int inCommand = 0;
   int sensorType = 0;
   unsigned long logCount = 0L;
-
   char getChar = ' ';  //read serial
 
   // wait for incoming data
@@ -109,6 +99,7 @@ void loop()
   if (getChar != START_CMD_CHAR) return; // if no command start flag, return to loop().
 
   // parse incoming pin# and value 
+  
   sensorType = Serial1.parseInt(); // read sensor typr
   if (sensorType == 1){ // accelerator
     valaccel[0] = value0;
@@ -125,6 +116,7 @@ void loop()
     valorien[1] = value1*(PI/180);
     valorien[2] = value2*(PI/180);
   }
+  checkval();
   logCount = Serial1.parseInt();  // read total logged sensor readings
   value0 = Serial1.parseFloat();  // 1st sensor value
   value1 = Serial1.parseFloat();  // 2rd sensor value if exists
@@ -161,23 +153,35 @@ void loop()
   ABC();
   
   alpharad();
-  
+ 
   alphadeg();
  
   finalval();
-  s2m();
-  Serial.print(val[0]);
-  Serial.print("##");
-  Serial.print(val[1]);
-  Serial.print("##");
-  Serial.print(val[2]);
-  Serial.print("##");
-  Serial.print(val[3]);
-  Serial.print("##");
-  Serial.print(val[4]);
-  Serial.print("##");
-  Serial.print(val[5]);
-  Serial.print("##");
+  setPWM();
+  Serial.print(motorang[0]);
+  
+  /*for (i=0; i<6; i++) {
+        pwm.setPWM(i+1, 0, motorang[i]); // added +1 to match PWM port numbering (pins 1..6 used)
+        Serial.print(motorang[i]);
+        Serial.print("##");
+  }*/
+  
+
+}
+/*
+  panVal = map(panVal, -10, 10, 0, 179);  // Map Accelerometer X value to pan servo angle.
+  panServo.write(panVal);     
+  delay(10); 
+}\
+
+
+*/
+void checkval(){
+  for (i=0;i<3;i++){
+    if (valorien[i]>1 or valorien[i]>-1){
+      valorien[i] = (round(valorien[i]*10))/10;
+    }
+  }
 }
 float platpivot(float tp,float tr)
 {
@@ -215,44 +219,32 @@ void ABC()
 }
 void alpharad()
 {
-  for (i = 0; i<6 ; i++){
-    double val = (A[i])/(sqrt(pow(B[i],2)+ pow(C[i],2)));
+  for (i = 0; i<6 ; i++){\
+    double val = ((A[i])/(sqrt(pow(B[i],2)+ pow(C[i],2))));
     double val2 = C[i]/B[i];
     alphar[i] = sinin(val) - tanin(val2); 
   }
 }
 void alphadeg()
 {
-  alphadprev[i] = alphad[i];
   for (i = 0; i<6 ; i++){
-    alphad[i] = ((alphar[i]) * (1/PI) * (180));
-    
+    //alphaprev[i] = alphad[i];
+    float k = ((alphar[i]) * (1/PI) * (180)); 
+    k = constrain(k,-45,45);
+    alphad[i] = k;
   }
 }
 void finalval()
 {
-  for (i = 0; i<6;i++){ 
-    motorang[i] = (alphad[i]-alphadprev[i])*((max_val[i]-min_val[i])/90);
+  for (i = 0; i<6;i++){
+     motorang[i] = (map(alphad[i],-45,45,min_val[i],max_val[i]));
   }
 }
-
-void s2m(){
-      val[0]= (val[0]+motorang[0]);
-      val[1] = (val[1]+motorang[1]);
-      val[2] = (val[2]+motorang[2]);
-      val[3] = (val[3]+motorang[3]);
-      val[4] = (val[4]+motorang[4]);
-      val[5] = (val[5]+motorang[5]);
-
-      /*pwm.setPWM(1, 0, val[0]);
-      pwm.setPWM(2, 0, val[1]);
-      pwm.setPWM(3, 0, val[2]);
-      pwm.setPWM(4, 0, val[3]);
-      pwm.setPWM(5, 0, val[4]);
-      pwm.setPWM(6, 0, val[5]);*/
-  
+void setPWM(){
+   for (i=0; i<6; i++) {  
+          pwm.setPWM(i+1, 0, motorang[i]); // added +1 to match PWM port numbering (pins 1..6 used)
+  }  
 }
-
 
 float sinin(float c){
 
