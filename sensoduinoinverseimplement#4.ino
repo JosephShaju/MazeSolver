@@ -61,11 +61,11 @@ float valprevaccel[3] = {0.0,0.0,0.0};
 float valprevorien[3] = {0.0,0.0,0.0};
 float value0, value1, value2;
 int val[6] = {270,310,280,360,235,293};
-int min_val[6] = {170,410,180,440,150,350};
-int max_val[6] = {370,210,380,280,320,195};
+int min_val[6] = {170,410,180,440,150,195};
+int max_val[6] = {370,210,380,280,320,350};
 void setup() {
   pwm.begin();
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial1.begin(9600);
   pinMode(19, INPUT_PULLUP);
   Serial.println("\nSensoDuino 0.13 by TechBitar.com (2013).\n");
@@ -77,9 +77,13 @@ void setup() {
   /*for (i=0; i<6; i++) {  
           pwm.setPWM(i+1, 0, 0); // added +1 to match PWM port numbering (pins 1..6 used)
   }*/
-  for (i=0; i<6; i++) {  
-          pwm.setPWM(i+1, 0, motorang[i]); // added +1 to match PWM port numbering (pins 1..6 used)
-  }  
+
+  pwm.setPWM(1, 0, motorang[0]);
+  pwm.setPWM(2, 0, motorang[1]);
+  pwm.setPWM(3, 0, motorang[2]);
+  pwm.setPWM(5, 0, motorang[4]);
+  pwm.setPWM(6, 0, motorang[5]);
+  
   
   
 
@@ -148,12 +152,12 @@ void loop()
   Serial.println("-----------------------");
 
   contain();
-  Serial.println(motorang[0]);
-  Serial.println(motorang[1]);
-  Serial.println(motorang[2]);
-  Serial.println(motorang[3]);
-  Serial.println(motorang[4]);
-  Serial.println(motorang[5]);
+  Serial.print(motorang[0]);
+  Serial.print(motorang[1]);
+  Serial.print(motorang[2]);
+  Serial.print(motorang[3]);
+  Serial.print(motorang[4]);
+  Serial.print(motorang[5]);
   
   
   deltaL();
@@ -263,11 +267,11 @@ void finalval()
   }
 }
 void set_PWM(){
-   for (i=0; i<6; i++) {  
-        // added +1 to match PWM port numbering (pins 1..6 used)
-       pwm.setPWM(i+1, 0, motorang[i]);
-       
-  }  
+  pwm.setPWM(1, 0, motorang[0]);
+  pwm.setPWM(2, 0, motorang[1]);
+  pwm.setPWM(3, 0, motorang[2]);
+  pwm.setPWM(5, 0, motorang[4]);
+  pwm.setPWM(6, 0, motorang[5]);
 }
 
 
