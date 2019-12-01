@@ -1,39 +1,9 @@
- #include <Adafruit_PWMServoDriver.h>
-
-/* =================================================================================================== 
- *  This code has been provided as an example to help you get started on your project. The objective 
- *  is to provide user input to the Arduino board and have the servo motors actuate. Several lines of 
- *  code are accredited to the Adafruit PWM Servo Driver Library example code. To use the Adafruit 
- *  PWM Servo Shield, be sure to add the Adafruit library to your Arduino IDE. 
- *  (Adafruit example: File menu > Examples > Adafruit PWM Servo Drivers Library > servo)
- *  
- *  Add Adafruit Library: In the Arduino IDE application select: Sketch menu > Include Libraries > 
- *  Manage Libraries. In the Library Manager window, search and install the "Adafruit PWM Servo 
- *  Driver Library".
- *  
- *  NOTE: Depending on your servo motor, the pulse width min/max may be different. Adjust to match 
- *  your servo motor.
- =================================================================================================== */
-
+#include <Adafruit_PWMServoDriver.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include "MPU9250.h"
 const int SERVOMIN = 145; // 'minimum' pulse length count (out of 4096) 175
 const int SERVOMAX = 460; // 'maximum' pulse length count (out of 4096) 475
-/*
-const int SERVOMIN_1 = 129; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_1 = 507; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_2 = 158; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_2 = 596; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_3 = 143; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_3 = 565; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_4 = 123; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_4 = 469; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_5 = 154; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_5 = 615; // 'maximum' pulse length count (out of 4096) 475
-const int SERVOMIN_6 = 142; // 'minimum' pulse length count (out of 4096) 175
-const int SERVOMAX_6 = 544; // 'maximum' pulse length count (out of 4096) 475
-*/
 const int SERVOMID = floor((SERVOMAX+SERVOMIN)/2); // 'mid' pulse length count (out of 4096)
 const int SERVOCHG = 2; // 'change' pulse length count
 // maximum it can go for 180 degree is 350 steps
