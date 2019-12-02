@@ -31,7 +31,8 @@ double ht = 90;
 int rod = 120;
 int servo = 20;
 
-double Px[6],double Py[6],double Pz[6],double Lx[6],double Ly[6],double Lz[6],double L[6],double A[6],double B[6],double C[6],double alphar[6],double alphad[6];
+double Px[6],double Py[6],double Pz[6],double Lx[6],double Ly[6],double Lz[6],double L[6],double A[6],double B[6],double C[6];
+double alphar[6],double alphad[6];
 
 int motorang[6] = {270,310,280,360,235,273};
 
